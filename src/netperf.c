@@ -193,6 +193,12 @@ main(int argc, char *argv[])
   else if (strcasecmp(test_name,"UDP_RR") == 0) {
     send_udp_rr(host_name);
   }
+  else if (strcasecmp(test_name,"UDPLITE_STREAM") == 0) {
+    send_udp_stream(host_name);
+  }
+  else if (strcasecmp(test_name,"UDPLITE_RR") == 0) {
+    send_udp_rr(host_name);
+  }
   else if (strcasecmp(test_name,"LOC_CPU") == 0) {
     loc_cpu_rate();
   }

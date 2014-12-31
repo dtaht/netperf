@@ -3363,7 +3363,7 @@ close_data_socket(SOCKET data_socket, struct sockaddr *peer, int peerlen, int pr
     fflush(where);
   }
 
-  if (protocol == IPPROTO_UDP) {
+  if (protocol == IPPROTO_UDP || protocol == IPPROTO_UDPLITE ) {
     /* try to give the remote a signal. what this means if we ever
        wanted to actually send zero-length messages remains to be seen
        :)  */
@@ -3429,7 +3429,7 @@ disconnect_data_socket(SOCKET data_socket, int initiate, int do_close, struct so
   /* this needs to be revisited for the netperf receiving case when
      the test is terminated by a Ctrl-C.  raj 2012-01-24 */
 
-  if (protocol != IPPROTO_UDP) {
+  if (protocol != IPPROTO_UDP && protocol != IPPROTO_UDPLITE) {
     if (initiate)
       shutdown(data_socket, SHUT_WR);
 
@@ -3683,7 +3683,8 @@ omni_create_data_socket(struct addrinfo *res)
 				 sizeof(local_cong_control_req));
     }
 
-    if ((res->ai_protocol == IPPROTO_UDP) &&
+    if ((res->ai_protocol == IPPROTO_UDP ||
+		 res->ai_protocol == IPPROTO_UDPLITE) &&
 	(receive_timeout != -1)) {
       set_receive_timeout(temp_socket, receive_timeout);
     }
@@ -3714,7 +3715,8 @@ choose_send_size(int lss, int protocol) {
 
     /* we will assume that everyone has IPPROTO_UDP and thus avoid an
        issue with Windows using an enum */
-    if ((protocol == IPPROTO_UDP) && (send_size > UDP_LENGTH_MAX))
+    if ((protocol == IPPROTO_UDP || protocol == IPPROTO_UDPLITE)
+		&& (send_size > UDP_LENGTH_MAX))
       send_size = UDP_LENGTH_MAX;
 
   }
@@ -3953,7 +3955,7 @@ send_omni_inner(char remote_host[], unsigned int legacy_caller, char header_str[
 #if defined(__linux)
     /* we really only need this for a UDP_STREAM test. we particularly
        do not want it for a CC or CRR test. raj 2012-08-06 */
-    if ((protocol == IPPROTO_UDP) &&
+    if ((protocol == IPPROTO_UDP || protocol == IPPROTO_UDPLITE) &&
 	(direction & NETPERF_XMIT)) {
       enable_enobufs(data_socket);
     }
@@ -4276,7 +4278,8 @@ send_omni_inner(char remote_host[], unsigned int legacy_caller, char header_str[
     /* if we are not a connectionless protocol, we need to connect. at
        some point even if we are a connectionless protocol, we may
        still want to "connect" for convenience raj 2008-01-14 */
-    need_to_connect = (protocol != IPPROTO_UDP) || local_connected;
+    need_to_connect = (protocol != IPPROTO_UDP && protocol != IPPROTO_UDPLITE)
+		|| local_connected;
 
     /* possibly wait just a moment before actually starting - used
        mainly when one is doing many many many concurrent netperf
@@ -4367,7 +4370,7 @@ send_omni_inner(char remote_host[], unsigned int legacy_caller, char header_str[
 	}
 	need_socket = 0;
 #if defined(__linux)
-	if ((protocol == IPPROTO_UDP) &&
+	if ((protocol == IPPROTO_UDP || protocol == IPPROTO_UDPLITE) &&
 	    (direction & NETPERF_XMIT)) {
 	  enable_enobufs(data_socket);
 	}
@@ -5522,7 +5525,8 @@ recv_omni()
   win_kludge_socket2 = s_listen;
 #endif
 
-  need_to_accept = (omni_request->protocol != IPPROTO_UDP);
+  need_to_accept = (omni_request->protocol != IPPROTO_UDP &&
+					omni_request->protocol != IPPROTO_UDPLITE);
 
   /* we need to hang a listen for everything that needs at least one
      accept. the age-old constant of 5 is probably OK for our purposes
@@ -5739,7 +5743,8 @@ recv_omni()
 	 peeraddr_in so we can send to netperf if this isn't a
 	 request/response test or if we are going to connect() the
 	 socket, but we only need to do it once. */
-      if ((omni_request->protocol == IPPROTO_UDP) &&
+      if ((omni_request->protocol == IPPROTO_UDP ||
+		   omni_request->protocol == IPPROTO_UDPLITE) &&
 	  (!peeraddr_set)) {
 	peeraddr_set = 1;
 	data_socket = s_listen;
@@ -5846,7 +5851,8 @@ recv_omni()
 	  check_interval += 1;
       }
 
-      if (omni_request->protocol == IPPROTO_UDP && need_to_connect &&
+      if ((omni_request->protocol == IPPROTO_UDP ||
+		   omni_request->protocol == IPPROTO_UDPLITE) && need_to_connect &&
           !connected) {
         if (connect(data_socket,
                     (struct sockaddr*)&peeraddr_in,
@@ -6894,6 +6900,7 @@ Send   Recv    Send   Recv\n\
   }
 }
 
+
 void
 send_udp_stream(char remote_host[])
 {
@@ -7033,6 +7040,8 @@ bytes   bytes    secs            #      #   %s/sec %% %c%c     us/KB\n\n";
     fflush(where);
   }
 }
+
+// FIXME - refactor this
 
 void
 send_udp_rr(char remote_host[])
@@ -7258,6 +7267,18 @@ set_omni_defaults_by_legacy_testname() {
   }
   else if (strcasecmp(test_name,"UDP_RR") == 0) {
      protocol = IPPROTO_UDP;
+    socket_type = SOCK_DGRAM;
+    direction = 0;
+    direction |= NETPERF_XMIT;
+    direction |= NETPERF_RECV;
+    req_size = rsp_size = 1;
+  }
+  else if (strcasecmp(test_name,"UDPLITE_STREAM") == 0) {
+    protocol = IPPROTO_UDPLITE;
+    socket_type = SOCK_DGRAM;
+  }
+  else if (strcasecmp(test_name,"UDPLITE_RR") == 0) {
+    protocol = IPPROTO_UDPLITE;
     socket_type = SOCK_DGRAM;
     direction = 0;
     direction |= NETPERF_XMIT;
@@ -7763,7 +7784,7 @@ scan_omni_args(int argc, char *argv[])
      to be routed via a gateway. raj 20091026 */
 
   if ((!have_R_option) &&
-      (protocol == IPPROTO_UDP) &&
+      (protocol == IPPROTO_UDP || protocol == IPPROTO_UDPLITE) &&
       (!NETPERF_IS_RR(direction))) {
     routing_allowed = 0;
   }

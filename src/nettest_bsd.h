@@ -648,7 +648,7 @@ extern void recv_tcp_maerts();
 extern void recv_tcp_rr();
 extern void recv_tcp_conn_rr();
 extern void recv_tcp_cc();
-extern void recv_udp_stream();
+extern void recv_udp_stream(int proto);
 extern void recv_udp_rr();
 
 extern void loc_cpu_rate();

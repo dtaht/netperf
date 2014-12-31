@@ -229,6 +229,34 @@
 #define         DO_SYSINFO                 600
 #define         SYSINFO_RESPONSE           601
 
+#define         DO_UDPLITE_STREAM          700
+#define         UDPLITE_STREAM_RESPONSE    701
+#define         UDPLITE_STREAM_RESULTS     702
+
+#define         DO_UDPLITE_RR              703
+#define         UDPLITE_RR_RESPONSE        704
+#define         UDPLITE_RR_RESULTS         705
+
+// FIXME
+
+#define         DO_XTI_UDPLITE_STREAM       706
+#define         XTI_UDPLITE_STREAM_RESPONSE 707
+#define         XTI_UDPLITE_STREAM_RESULTS  708
+
+#define         DO_XTI_UDPLITE_RR           709
+#define         XTI_UDPLITE_RR_RESPONSE     710
+#define         XTI_UDPLITE_RR_RESULTS      711
+
+#define         DO_UDPLITEIPV6_STREAM           712
+#define         UDPLITEIPV6_STREAM_RESPONSE     713
+#define         UDPLITEIPV6_STREAM_RESULTS      714
+
+#define         DO_UDPLITEIPV6_RR               715
+#define         UDPLITEIPV6_RR_RESPONSE         716
+#define         UDPLITEIPV6_RR_RESULTS          717
+
+
+
 #if HAVE_INTTYPES_H
 # include <inttypes.h>
 #else

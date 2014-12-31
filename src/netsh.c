@@ -1182,6 +1182,8 @@ scan_cmd_line(int argc, char *argv[])
 	(strcasecmp(test_name,"TCP_CRR") == 0) ||
 	(strcasecmp(test_name,"UDP_STREAM") == 0) ||
 	(strcasecmp(test_name,"UDP_RR") == 0) ||
+	(strcasecmp(test_name,"UDPLITE_STREAM") == 0) ||
+	(strcasecmp(test_name,"UDPLITE_RR") == 0) ||
 #endif
 #ifdef HAVE_ICSC_EXS
 	(strcasecmp(test_name,"EXS_TCP_STREAM") == 0) ||
@@ -1227,6 +1229,8 @@ scan_cmd_line(int argc, char *argv[])
 	     (strcasecmp(test_name,"XTI_TCP_STREAM") == 0) ||
 	     (strcasecmp(test_name,"XTI_UDP_RR") == 0) ||
 	     (strcasecmp(test_name,"XTI_UDP_STREAM") == 0))
+	     (strcasecmp(test_name,"XTI_UDPLITE_RR") == 0) ||
+	     (strcasecmp(test_name,"XTI_UDPLITE_STREAM") == 0))
       {
 	scan_xti_args(argc, argv);
       }
@@ -1260,6 +1264,8 @@ scan_cmd_line(int argc, char *argv[])
 	     (strcasecmp(test_name,"TCP_CRR") == 0) ||
 	     (strcasecmp(test_name,"UDP_STREAM") == 0) ||
 	     (strcasecmp(test_name,"UDP_RR") == 0) ||
+	     (strcasecmp(test_name,"UDPLITE_STREAM") == 0) ||
+	     (strcasecmp(test_name,"UDPLITE_RR") == 0) ||
 #endif
 	     (strcasecmp(test_name,"UUID") == 0)) {
       scan_omni_args(argc, argv);

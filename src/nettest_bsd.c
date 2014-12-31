@@ -7029,7 +7029,7 @@ bytes   bytes    secs            #      #   %s/sec %% %c%c     us/KB\n\n";
  /* UDP_STREAM performance test. */
 
 void
-recv_udp_stream()
+recv_udp_stream(int proto)
 {
   struct ring_elt *recv_ring;
   struct addrinfo *local_res;
@@ -7137,7 +7137,7 @@ recv_udp_stream()
 				port_buffer,
 				nf_to_af(udp_stream_request->ipfamily),
 				SOCK_DGRAM,
-				IPPROTO_UDP,
+				proto,
 				0);
 
   s_data = create_data_socket(local_res);
@@ -7448,7 +7448,7 @@ bytes  bytes  bytes   bytes  secs.   per sec  %% %c    %% %c    us/Tr   us/Tr\n\
 		     &local_res,
 		     remote_host,
 		     SOCK_DGRAM,
-		     IPPROTO_UDP,
+		     proto,
 		     0);
 
   if ( print_headers ) {
@@ -8039,7 +8039,7 @@ bytes  bytes  bytes   bytes  secs.   per sec  %% %c    %% %c    us/Tr   us/Tr\n\
  /* this routine implements the receive side (netserver) of a UDP_RR */
  /* test. */
 void
-recv_udp_rr()
+recv_udp_rr(int proto)
 {
 
   struct ring_elt *recv_ring;
@@ -8158,7 +8158,7 @@ recv_udp_rr()
 				port_buffer,
 				nf_to_af(udp_rr_request->ipfamily),
 				SOCK_DGRAM,
-				IPPROTO_UDP,
+				proto,
 				0);
 
   s_data = create_data_socket(local_res);
