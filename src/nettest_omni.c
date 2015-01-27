@@ -3429,7 +3429,7 @@ disconnect_data_socket(SOCKET data_socket, int initiate, int do_close, struct so
   /* this needs to be revisited for the netperf receiving case when
      the test is terminated by a Ctrl-C.  raj 2012-01-24 */
 
-  if (protocol != IPPROTO_UDP && protocol != IPPROTO_UDPLITE) {
+  if (!(protocol == IPPROTO_UDP || protocol == IPPROTO_UDPLITE)) {
     if (initiate)
       shutdown(data_socket, SHUT_WR);
 
@@ -4278,7 +4278,7 @@ send_omni_inner(char remote_host[], unsigned int legacy_caller, char header_str[
     /* if we are not a connectionless protocol, we need to connect. at
        some point even if we are a connectionless protocol, we may
        still want to "connect" for convenience raj 2008-01-14 */
-    need_to_connect = (protocol != IPPROTO_UDP && protocol != IPPROTO_UDPLITE)
+    need_to_connect = (!(protocol == IPPROTO_UDP || protocol == IPPROTO_UDPLITE))
 		|| local_connected;
 
     /* possibly wait just a moment before actually starting - used
@@ -5525,8 +5525,8 @@ recv_omni()
   win_kludge_socket2 = s_listen;
 #endif
 
-  need_to_accept = (omni_request->protocol != IPPROTO_UDP &&
-					omni_request->protocol != IPPROTO_UDPLITE);
+  need_to_accept = (!(omni_request->protocol == IPPROTO_UDP ||
+					omni_request->protocol == IPPROTO_UDPLITE));
 
   /* we need to hang a listen for everything that needs at least one
      accept. the age-old constant of 5 is probably OK for our purposes
