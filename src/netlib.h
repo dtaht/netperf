@@ -237,16 +237,6 @@
 #define         UDPLITE_RR_RESPONSE        704
 #define         UDPLITE_RR_RESULTS         705
 
-// FIXME
-
-#define         DO_XTI_UDPLITE_STREAM       706
-#define         XTI_UDPLITE_STREAM_RESPONSE 707
-#define         XTI_UDPLITE_STREAM_RESULTS  708
-
-#define         DO_XTI_UDPLITE_RR           709
-#define         XTI_UDPLITE_RR_RESPONSE     710
-#define         XTI_UDPLITE_RR_RESULTS      711
-
 #define         DO_UDPLITEIPV6_STREAM           712
 #define         UDPLITEIPV6_STREAM_RESPONSE     713
 #define         UDPLITEIPV6_STREAM_RESULTS      714

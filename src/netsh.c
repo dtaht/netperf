@@ -1229,8 +1229,6 @@ scan_cmd_line(int argc, char *argv[])
 	     (strcasecmp(test_name,"XTI_TCP_STREAM") == 0) ||
 	     (strcasecmp(test_name,"XTI_UDP_RR") == 0) ||
 	     (strcasecmp(test_name,"XTI_UDP_STREAM") == 0))
-	     (strcasecmp(test_name,"XTI_UDPLITE_RR") == 0) ||
-	     (strcasecmp(test_name,"XTI_UDPLITE_STREAM") == 0))
       {
 	scan_xti_args(argc, argv);
       }

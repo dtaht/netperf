@@ -139,6 +139,11 @@ char nettest_omni_id[]="\
 #include "netsh.h"
 #include "nettest_bsd.h"
 
+#ifndef IPPROTO_UDPLITE
+#define HAVE_NO_UDPLITE 1
+#define IPPROTO_UDPLITE IPPROTO_UDP
+#endif
+
 /* we only really use this once, but the initial patch to
    src/nettest_bsd.c used it in several places. keep it as a macro
    just for kicks and just in case we do end-up needing to use it
@@ -7273,6 +7278,7 @@ set_omni_defaults_by_legacy_testname() {
     direction |= NETPERF_RECV;
     req_size = rsp_size = 1;
   }
+#ifndef HAVE_NO_UDPLITE
   else if (strcasecmp(test_name,"UDPLITE_STREAM") == 0) {
     protocol = IPPROTO_UDPLITE;
     socket_type = SOCK_DGRAM;
@@ -7285,6 +7291,7 @@ set_omni_defaults_by_legacy_testname() {
     direction |= NETPERF_RECV;
     req_size = rsp_size = 1;
   }
+#endif
   else if (strcasecmp(test_name,"TCP_CC") == 0) {
     direction = 0;
     connection_test = 1;

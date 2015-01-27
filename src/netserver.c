@@ -899,6 +899,7 @@ process_requests()
       recv_udp_rr(IPPROTO_UDP);
       break;
 
+#if defined(IPPROTO_UDPLITE)
     case DO_UDPLITE_STREAM:
       recv_udp_stream(IPPROTO_UDPLITE);
       break;
@@ -906,6 +907,7 @@ process_requests()
     case DO_UDPLITE_RR:
       recv_udp_rr(IPPROTO_UDPLITE);
       break;
+#endif
 
 #ifdef WANT_DLPI
 
@@ -964,14 +966,6 @@ process_requests()
       recv_xti_udp_rr();
       break;
 	  
-	case DO_XTI_UDPLITE_STREAM:
-      recv_xti_udplite_stream();
-      break;
-
-    case DO_XTI_UDPLITE_RR:
-      recv_xti_udplite_rr();
-      break;
-
 #endif /* WANT_XTI */
 
 #ifdef WANT_SCTP
